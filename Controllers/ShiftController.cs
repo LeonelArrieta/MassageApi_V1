@@ -1,36 +1,47 @@
 ﻿using AutoMapper;
 using MassageApi_V1.DTOs;
 using MassageApi_V1.Models;
+using MassageApi_V1.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace MassageApi_V1.Controllers
 {
-    [Authorize(Roles ="Admin")]
     [ApiController]
     [Route("api/shift")]
     
+    
     public class ShiftController : ControllerBase
     {
-        private readonly MyDBContext _context;
+        private readonly IShiftRepository _repository;
         private readonly IMapper _mapper;
 
-        public ShiftController(MyDBContext context, IMapper mapper)
+        public ShiftController(IShiftRepository repository, IMapper mapper)
         {
-            this._context = context;
+            _repository = repository;
             _mapper = mapper;
         }
         [HttpGet]
+        [Authorize(Roles = "CommonUser,Admin" )]
+
         public async Task<ActionResult> GetAll()
         {
-            var shifts = await _context.Shifts.Select(x=>
-                new {
-                        date=x.Date,
-                        contact=x.contact.Name,
-                        contactLastName=x.contact.LastName,
-                        massageType=x.massageType.Name,
-                    }).ToListAsync();
+            var shifts = await _repository.GetAll();
+            if (shifts == null)
+            {
+                return BadRequest();
+            }
+            return Ok(shifts);
+
+        }
+        [HttpGet("Relations")]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<ActionResult> GetAllWhitRelations()
+        {
+            var shifts = await _repository.GetAllWhitRelations();
             if (shifts == null)
             {
                 return BadRequest();
@@ -39,15 +50,12 @@ namespace MassageApi_V1.Controllers
 
         }
         [HttpGet("Id")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> GetbyId(int id)
         {
             
-            var shift = await _context.Shifts.Where(x=>x.Id==id).Select(x => new {
-                date = x.Date,
-                contact = x.contact.Name,
-                contactLastName = x.contact.LastName,
-                massageType = x.massageType.Name,
-            }).FirstOrDefaultAsync();
+            var shift = await _repository.GetbyId(id);
 
             if (shift == null)
             {
@@ -56,37 +64,38 @@ namespace MassageApi_V1.Controllers
             return Ok(shift);
         }
         [HttpPost]
-        public async Task<ActionResult> Post(ShiftNewDTO shiftDTO, int? contactId, int massage)
+        [Authorize(Roles ="CommonUser,Admin")]
+
+        public async Task<ActionResult> Post(ShiftNewDTO shiftDTO)
         {
             var shift = _mapper.Map<Shift>(shiftDTO);
-            shift.MassageTypeId =massage;
-            if(contactId==null)
+            var result= await _repository.Post(shift);
+            if (result == null)
             {
-                _context.Add(shift);
-            }            
-            else
-            {
-                var contact = await _context.Contacts.FirstOrDefaultAsync(s => s.Id == contactId);
-                if (contact != null)
-                {
-                    contact.Shift = shift;
-
-                }
-                else { return BadRequest("El contacto no existe"); }
-
+                return BadRequest();
             }
-            await _context.SaveChangesAsync();
-            return Ok();
+            return Ok(result);
+        }
+
+        [HttpPut("Shift")]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<ActionResult> Put(ShiftNewDTO shiftDTO)
+        {
+            var shift = _mapper.Map<Shift>(shiftDTO);
+            var entity = await _repository.Update(shift);
+            return Ok(entity);
+
         }
         [HttpDelete("Id")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult> Delete(int Id)
         {
-            var shift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == Id);
+            var shift = await _repository.Delete(Id);
             if (shift != null)
-            {
-                _context.Remove(shift);
-                return Ok();
-            }
+              return Ok();
+            
             return BadRequest();
         }
     }

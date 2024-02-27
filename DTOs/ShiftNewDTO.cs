@@ -10,8 +10,6 @@ namespace MassageApi_V1.DTOs
         public DateTime Date { get; set; }
 
         public int ContactId { get; set; }
-        public ContactNewDTO? contact { get; set; } = null!;
-
         public int MassageTypeId { get; set; }
 
     }

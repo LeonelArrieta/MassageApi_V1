@@ -10,8 +10,8 @@ namespace MassageApi_V1.Models
         public DateTime Date { get; set; }
 
         public int ContactId { get; set; }
-        public Contact contact { get; set; } = null!;
+        public Contact Contact { get; set; }
         public int MassageTypeId { get; set; }
-        public MassageType massageType { get; set; } = null!;
+        public MassageType MassageType { get; set; }
     }
 }

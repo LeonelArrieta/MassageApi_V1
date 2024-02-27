@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MassageApi_V1.Migrations
 {
     /// <inheritdoc />
-    public partial class firstmigration : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,8 +21,10 @@ namespace MassageApi_V1.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<int>(type: "int", nullable: false),
-                    Birthdate = table.Column<DateTime>(type: "Date", nullable: false),
-                    DNI = table.Column<int>(type: "int", nullable: false)
+                    Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DNI = table.Column<int>(type: "int", nullable: false),
+                    Observations = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShiftId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,23 +46,16 @@ namespace MassageApi_V1.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DataSheet",
+                name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Observation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ContactId = table.Column<int>(type: "int", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DataSheet", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DataSheet_Contact_ContactId",
-                        column: x => x.ContactId,
-                        principalTable: "Contact",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_User", x => x.Email);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,38 +86,24 @@ namespace MassageApi_V1.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contact_DNI",
-                table: "Contact",
-                column: "DNI",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DataSheet_ContactId",
-                table: "DataSheet",
-                column: "ContactId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Shift_ContactId",
                 table: "Shift",
-                column: "ContactId",
-                unique: true);
+                column: "ContactId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Shift_MassageTypeId",
                 table: "Shift",
-                column: "MassageTypeId",
-                unique: true);
+                column: "MassageTypeId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DataSheet");
+                name: "Shift");
 
             migrationBuilder.DropTable(
-                name: "Shift");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Contact");

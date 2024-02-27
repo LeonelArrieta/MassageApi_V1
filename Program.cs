@@ -1,4 +1,6 @@
+using MassageApi_V1.DTOs;
 using MassageApi_V1.Models;
+using MassageApi_V1.Repository;
 using MassageApi_V1.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IContactRepository, ContactReposiroty>();
+builder.Services.AddScoped<IShiftRepository, ShiftReposiroty>();
+
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@
 using MassageApi_V1.Models;
 using MassageApi_V1.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace MassageApi_V1.Controllers
 {
@@ -9,25 +10,22 @@ namespace MassageApi_V1.Controllers
     [Route("api/register")]
     public class RegisterController : ControllerBase
     {
-        private readonly MyDBContext _context;
         private readonly IUserService _userService;
 
-        public RegisterController(MyDBContext context, IUserService _userService)
+        public RegisterController(IUserService userService)
         {
-            _context = context;
-            this._userService = _userService;
+            
+            _userService = userService;
         }
         [HttpPost]
         public async Task<IActionResult> Register(UserNewDTO user)
         {
-            if (user.Email == "" || user.Password == "")
-                return BadRequest("Usuario y/o contraseña incorrectos");
-            var hashUser = new User();
-            hashUser.Email = user.Email;
-            hashUser.Password = _userService.EncryptPassword(user.Password);
-            await _context.Users.AddAsync(hashUser);
-            await _context.SaveChangesAsync();
+            var response = await _userService.Register(user);
+            if (response != HttpStatusCode.OK)
+                return BadRequest(response);
             return Ok();
+           
+
         }
 
     }

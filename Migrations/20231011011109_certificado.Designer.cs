@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MassageApi_V1.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20230309223755_firstmigration")]
-    partial class firstmigration
+    [Migration("20231011011109_certificado")]
+    partial class certificado
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,7 +38,7 @@ namespace MassageApi_V1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Birthdate")
-                        .HasColumnType("Date");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DNI")
                         .HasColumnType("int");
@@ -51,38 +51,16 @@ namespace MassageApi_V1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Observations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PhoneNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DNI")
-                        .IsUnique();
-
                     b.ToTable("Contact", (string)null);
-                });
-
-            modelBuilder.Entity("MassageApi_V1.Models.DataSheet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ContactId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContactId")
-                        .IsUnique();
-
-                    b.ToTable("DataSheet", (string)null);
                 });
 
             modelBuilder.Entity("MassageApi_V1.Models.MassageType", b =>
@@ -125,52 +103,48 @@ namespace MassageApi_V1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId")
-                        .IsUnique();
+                    b.HasIndex("ContactId");
 
-                    b.HasIndex("MassageTypeId")
-                        .IsUnique();
+                    b.HasIndex("MassageTypeId");
 
                     b.ToTable("Shift", (string)null);
                 });
 
-            modelBuilder.Entity("MassageApi_V1.Models.DataSheet", b =>
+            modelBuilder.Entity("MassageApi_V1.Models.User", b =>
                 {
-                    b.HasOne("MassageApi_V1.Models.Contact", null)
-                        .WithOne("DataSheet")
-                        .HasForeignKey("MassageApi_V1.Models.DataSheet", "ContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("MassageApi_V1.Models.Shift", b =>
                 {
-                    b.HasOne("MassageApi_V1.Models.Contact", null)
-                        .WithOne("Shift")
-                        .HasForeignKey("MassageApi_V1.Models.Shift", "ContactId")
+                    b.HasOne("MassageApi_V1.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MassageApi_V1.Models.MassageType", null)
-                        .WithOne("Shift")
-                        .HasForeignKey("MassageApi_V1.Models.Shift", "MassageTypeId")
+                    b.HasOne("MassageApi_V1.Models.MassageType", "MassageType")
+                        .WithMany()
+                        .HasForeignKey("MassageTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("MassageApi_V1.Models.Contact", b =>
-                {
-                    b.Navigation("DataSheet")
-                        .IsRequired();
+                    b.Navigation("Contact");
 
-                    b.Navigation("Shift")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MassageApi_V1.Models.MassageType", b =>
-                {
-                    b.Navigation("Shift")
-                        .IsRequired();
+                    b.Navigation("MassageType");
                 });
 #pragma warning restore 612, 618
         }
