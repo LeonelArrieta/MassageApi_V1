@@ -19,5 +19,10 @@ namespace MassageApi_V1.Repository
                 .Include(x=>x.MassageType).Where(x=>x.MassageTypeId==x.MassageType.Id).ToListAsync();
             return result;
         }
+        public async Task<List<DateTime>> GetAllDates()
+        {
+            var result = await _context.Shifts.Select(x => x.Date).ToListAsync();
+            return result;
+        }
     }
 }

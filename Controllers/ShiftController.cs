@@ -23,12 +23,12 @@ namespace MassageApi_V1.Controllers
             _repository = repository;
             _mapper = mapper;
         }
-        [HttpGet]
+        [HttpGet("Dates")]
         [Authorize(Roles = "CommonUser,Admin" )]
 
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> GetAllDates()
         {
-            var shifts = await _repository.GetAll();
+            var shifts = await _repository.GetAllDates();
             if (shifts == null)
             {
                 return BadRequest();
