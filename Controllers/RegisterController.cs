@@ -14,17 +14,22 @@ namespace MassageApi_V1.Controllers
 
         public RegisterController(IUserService userService)
         {
-            
+
             _userService = userService;
         }
         [HttpPost]
         public async Task<IActionResult> Register(UserNewDTO user)
         {
             var response = await _userService.Register(user);
-            if (response != HttpStatusCode.OK)
-                return BadRequest(response);
-            return Ok();
-           
+            switch (response)
+            {                
+                case HttpStatusCode.Conflict:
+                    return Conflict();
+                case HttpStatusCode.OK:
+                    return Ok();
+                default:
+                    return BadRequest();
+            }
 
         }
 

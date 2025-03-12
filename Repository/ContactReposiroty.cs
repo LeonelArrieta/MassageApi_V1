@@ -1,7 +1,4 @@
-﻿using MassageApi_V1.DTOs;
-using MassageApi_V1.Models;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using MassageApi_V1.Models;
 
 namespace MassageApi_V1.Repository
 {
@@ -9,7 +6,7 @@ namespace MassageApi_V1.Repository
     {
         private readonly MyDBContext _context;
 
-        public ContactReposiroty(MyDBContext context):base(context) 
+        public ContactReposiroty(MyDBContext context) : base(context)
         {
             _context = context;
         }

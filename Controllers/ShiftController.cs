@@ -4,15 +4,13 @@ using MassageApi_V1.Models;
 using MassageApi_V1.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace MassageApi_V1.Controllers
 {
     [ApiController]
     [Route("api/shift")]
-    
-    
+
+
     public class ShiftController : ControllerBase
     {
         private readonly IShiftRepository _repository;
@@ -24,7 +22,7 @@ namespace MassageApi_V1.Controllers
             _mapper = mapper;
         }
         [HttpGet("Dates")]
-        [Authorize(Roles = "CommonUser,Admin" )]
+        [Authorize(Roles = "CommonUser,Admin")]
 
         public async Task<ActionResult> GetAllDates()
         {
@@ -54,7 +52,7 @@ namespace MassageApi_V1.Controllers
 
         public async Task<ActionResult> GetbyId(int id)
         {
-            
+
             var shift = await _repository.GetbyId(id);
 
             if (shift == null)
@@ -64,12 +62,12 @@ namespace MassageApi_V1.Controllers
             return Ok(shift);
         }
         [HttpPost]
-        [Authorize(Roles ="CommonUser,Admin")]
+        [Authorize(Roles = "CommonUser,Admin")]
 
         public async Task<ActionResult> Post(ShiftNewDTO shiftDTO)
         {
             var shift = _mapper.Map<Shift>(shiftDTO);
-            var result= await _repository.Post(shift);
+            var result = await _repository.Post(shift);
             if (result == null)
             {
                 return BadRequest();
@@ -94,8 +92,8 @@ namespace MassageApi_V1.Controllers
         {
             var shift = await _repository.Delete(Id);
             if (shift != null)
-              return Ok();
-            
+                return Ok();
+
             return BadRequest();
         }
     }

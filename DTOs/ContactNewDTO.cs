@@ -1,5 +1,4 @@
-﻿using MassageApi_V1.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +6,7 @@ namespace MassageApi_V1.DTOs
 {
     public class ContactNewDTO
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string LastName { get; set; } = null!;
         [EmailAddress]

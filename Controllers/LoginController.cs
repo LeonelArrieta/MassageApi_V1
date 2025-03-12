@@ -2,7 +2,6 @@
 using MassageApi_V1.Models;
 using MassageApi_V1.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace MassageApi_V1.Controllers
 {
@@ -12,11 +11,11 @@ namespace MassageApi_V1.Controllers
     {
         private readonly IUserService _userService;
 
-        public LoginController(MyDBContext context,IUserService userService)
+        public LoginController(MyDBContext context, IUserService userService)
         {
             _userService = userService;
         }
-       
+
         [HttpPost]
         public async Task<ActionResult> Login(UserNewDTO user)
         {

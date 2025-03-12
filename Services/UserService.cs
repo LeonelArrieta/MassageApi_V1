@@ -1,43 +1,31 @@
 ﻿using AutoMapper;
 using MassageApi_V1.DTOs;
 using MassageApi_V1.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using MassageApi_V1.Utilities.Hasher; 
 
 namespace MassageApi_V1.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IConfiguration _configuration;
         private readonly MyDBContext _context;
+        private readonly SecretHasher _hasher;
         private readonly IMapper _mapper;
-
-
-        public UserService(IConfiguration configuration, MyDBContext context, IMapper mapper)
+        public UserService(IConfiguration configuration, MyDBContext context,IMapper mapper)
         {
             _configuration = configuration;
             _context = context;
             _mapper = mapper;
+            _hasher= new SecretHasher();
         }
-
-        public string EncryptPassword(string password)
-        {
-            SHA256 sha256 = SHA256Managed.Create();
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] stream = null;
-            StringBuilder sb = new StringBuilder();
-            stream = sha256.ComputeHash(encoding.GetBytes(password));
-            for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
-            return sb.ToString();
-        }
+              
         public string GenerateToken(User user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -62,10 +50,11 @@ namespace MassageApi_V1.Services
             //implementar isValid *******
             if (user == null || user.Email == "" || user.Password == null)
                 return HttpStatusCode.BadRequest;
+
             var validate = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
             if (validate != null && user.Email.Equals(validate.Email))
                 return HttpStatusCode.Conflict;
-            user.Password = EncryptPassword(user.Password);
+            user.Password = _hasher.Hash(user.Password);
             _context.Users.Add(_mapper.Map<User>(user));
             await _context.SaveChangesAsync();
             return HttpStatusCode.OK;
@@ -73,17 +62,22 @@ namespace MassageApi_V1.Services
 
         public async Task<string> Login(UserNewDTO user)
         {
-            var userAuthenticate = await _context.Users.Where(x => x.Email == user.Email && x.Password == EncryptPassword(user.Password)).FirstOrDefaultAsync();
-            if (userAuthenticate is not null)
+            var userAuthenticate = await _context.Users.Where(x => x.Email == user.Email).FirstOrDefaultAsync();
+            if (userAuthenticate != null)
             {
-
-                var logUser = _mapper.Map<User>(userAuthenticate);
-                var token = GenerateToken(logUser);
-                return token;
+                if (_hasher.Verify(user.Password, userAuthenticate.Password))
+                {                  
+                    var token = GenerateToken(userAuthenticate);
+                    return token;
+                    
+                    
+                }
+                return HttpStatusCode.BadRequest.ToString();
             }
+           
             return HttpStatusCode.BadRequest.ToString();
         }
 
-        
+
     }
 }

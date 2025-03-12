@@ -12,6 +12,6 @@ namespace MassageApi_V1.Models
         [Required]
         [PasswordPropertyText(true)]
         public string Password { get; set; } = null!;
-        public string Role { get; set; }="CommonUser";
+        public string Role { get; set; } = "CommonUser";
     }
 }

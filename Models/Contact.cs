@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.SqlTypes;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MassageApi_V1.Models
 {
@@ -17,5 +14,5 @@ namespace MassageApi_V1.Models
         public DateTime Birthdate { get; set; }
         public int DNI { get; set; }
         public string Observations { get; set; } = null!;
-         }
+    }
 }

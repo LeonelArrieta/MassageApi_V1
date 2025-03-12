@@ -6,7 +6,7 @@ namespace MassageApi_V1.Models
     {
         public int Id { get; set; }
 
-        [Column(TypeName ="datetime")]
+        [Column(TypeName = "datetime")]
         public DateTime Date { get; set; }
 
         public int ContactId { get; set; }
