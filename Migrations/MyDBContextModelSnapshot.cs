@@ -35,7 +35,7 @@ namespace MassageApi_V1.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Birthdate")
-                        .HasColumnType("Date");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DNI")
                         .HasColumnType("int");
@@ -48,38 +48,16 @@ namespace MassageApi_V1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Observations")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PhoneNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DNI")
-                        .IsUnique();
-
                     b.ToTable("Contact", (string)null);
-                });
-
-            modelBuilder.Entity("MassageApi_V1.Models.DataSheet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ContactId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Observation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContactId")
-                        .IsUnique();
-
-                    b.ToTable("DataSheet", (string)null);
                 });
 
             modelBuilder.Entity("MassageApi_V1.Models.MassageType", b =>
@@ -122,8 +100,7 @@ namespace MassageApi_V1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId")
-                        .IsUnique();
+                    b.HasIndex("ContactId");
 
                     b.HasIndex("MassageTypeId");
 
@@ -148,41 +125,23 @@ namespace MassageApi_V1.Migrations
                     b.ToTable("User", (string)null);
                 });
 
-            modelBuilder.Entity("MassageApi_V1.Models.DataSheet", b =>
-                {
-                    b.HasOne("MassageApi_V1.Models.Contact", null)
-                        .WithOne("DataSheet")
-                        .HasForeignKey("MassageApi_V1.Models.DataSheet", "ContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MassageApi_V1.Models.Shift", b =>
                 {
-                    b.HasOne("MassageApi_V1.Models.Contact", "contact")
-                        .WithOne("Shift")
-                        .HasForeignKey("MassageApi_V1.Models.Shift", "ContactId")
+                    b.HasOne("MassageApi_V1.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MassageApi_V1.Models.MassageType", "massageType")
+                    b.HasOne("MassageApi_V1.Models.MassageType", "MassageType")
                         .WithMany()
                         .HasForeignKey("MassageTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("contact");
+                    b.Navigation("Contact");
 
-                    b.Navigation("massageType");
-                });
-
-            modelBuilder.Entity("MassageApi_V1.Models.Contact", b =>
-                {
-                    b.Navigation("DataSheet")
-                        .IsRequired();
-
-                    b.Navigation("Shift")
-                        .IsRequired();
+                    b.Navigation("MassageType");
                 });
 #pragma warning restore 612, 618
         }
