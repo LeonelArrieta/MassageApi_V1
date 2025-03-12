@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace MassageApi_V1.Repository
+﻿namespace MassageApi_V1.Repository
 {
-    public interface IGenericRepository<T> 
+    public interface IGenericRepository<T>
     {
         public Task<List<T>> GetAll();
         public Task<T?> GetbyId(int id);

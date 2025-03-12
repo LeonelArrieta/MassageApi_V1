@@ -16,7 +16,7 @@ namespace MassageApi_V1.Repository
         {
             var result = await _context.Shifts
                 .Include(x => x.Contact).Where(x => x.ContactId == x.Contact.Id)
-                .Include(x=>x.MassageType).Where(x=>x.MassageTypeId==x.MassageType.Id).ToListAsync();
+                .Include(x => x.MassageType).Where(x => x.MassageTypeId == x.MassageType.Id).ToListAsync();
             return result;
         }
         public async Task<List<DateTime>> GetAllDates()

@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MassageApi_V1.DTOs
 {
     public class UserNewDTO
     {
         [Required]
-        [EmailAddress]        
+        [EmailAddress]
         public string Email { get; set; } = string.Empty;
         [Required]
         [PasswordPropertyText(true)]

@@ -1,11 +1,10 @@
 ﻿using MassageApi_V1.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MassageApi_V1.Repository
 {
-    public class GenericRepository <T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly MyDBContext _context;
         protected DbSet<T> Entities => _context.Set<T>();
@@ -17,7 +16,7 @@ namespace MassageApi_V1.Repository
         }
 
 
-        
+
         public async Task<T?> Delete(int id)
         {
             var result = await Entities.FindAsync(id);
@@ -32,7 +31,7 @@ namespace MassageApi_V1.Repository
 
         public async Task<List<T>> GetAll()
         {
-            var result = await Entities.ToListAsync();            
+            var result = await Entities.ToListAsync();
             return result;
         }
 
@@ -46,7 +45,7 @@ namespace MassageApi_V1.Repository
 
         public async Task<T> Post(T value)
         {
-            EntityEntry<T> result = await Entities.AddAsync(value);  
+            EntityEntry<T> result = await Entities.AddAsync(value);
             await _context.SaveChangesAsync();
             return result.Entity;
         }
@@ -54,13 +53,13 @@ namespace MassageApi_V1.Repository
         public async Task<T?> Update(T value)
         {
             EntityEntry<T> result = _context.Entry(value);
-            if(result != null)
-            {   
+            if (result != null)
+            {
                 _context.Update(value);
                 await _context.SaveChangesAsync();
                 return result.Entity;
             }
-                
+
             return null;
         }
     }
