@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MassageApi_V1.Models
 {
@@ -6,7 +7,9 @@ namespace MassageApi_V1.Models
     {
         public int Id { get; set; }
 
+        [Required]
         [Column(TypeName = "datetime")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
 
         public int ContactId { get; set; }

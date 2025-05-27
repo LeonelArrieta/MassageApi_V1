@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,15 +8,29 @@ namespace MassageApi_V1.DTOs
     public class ContactNewDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        [EmailAddress]
-        public string Address { get; set; } = null!;
-        public int PhoneNumber { get; set; }
-        [Column(TypeName = "Date")]
-        public DateTime Birthdate { get; set; }
+
+        [Required]
+        [DisplayName("Nombre")]
+        [StringLength(50, MinimumLength = 3)]
+        public string Name { get; set; }
+
+        [DisplayName("Nombre")]
+        [StringLength(50, MinimumLength = 3)]
+        public string LastName { get; set; } = "";
+
+        [Required]
+        [DisplayName("Correo Electrónico")]
+        [RegularExpression("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", ErrorMessage = "El correo electrónico es inválido.")]
+        public string Address { get; set; }
+        [DisplayName("Número de teléfono")]
+        public int PhoneNumber { get; set; } = 0;
+        [DisplayName("Fecha de nacimiento")]
+        public DateTime Birthdate { get; set; } = DateTime.Now!;
+        [DisplayName("DNI")]
         public int DNI { get; set; }
-        public string Observations { get; set; } = null!;
+        [DisplayName("Observaciones")]
+        [StringLength(300)]
+        public string Observations { get; set; } = "";
 
     }
 }

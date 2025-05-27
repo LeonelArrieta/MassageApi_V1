@@ -8,10 +8,13 @@ namespace MassageApi_V1.Models
         [Required]
         [EmailAddress]
         [Key]
-        public string Email { get; set; } = null!;
+        [DisplayName("Correo Electrónico")]
+        [RegularExpression("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", ErrorMessage = "El correo electrónico es inválido.")]
+        public string Email { get; set; }
         [Required]
+        [DisplayName("Contraseña")]
         [PasswordPropertyText(true)]
-        public string Password { get; set; } = null!;
+        public string Password { get; set; }
         public string Role { get; set; } = "CommonUser";
     }
 }

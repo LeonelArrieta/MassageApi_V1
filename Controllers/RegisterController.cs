@@ -21,14 +21,14 @@ namespace MassageApi_V1.Controllers
         public async Task<IActionResult> Register(UserNewDTO user)
         {
             var response = await _userService.Register(user);
-            switch (response)
-            {                
-                case HttpStatusCode.Conflict:
-                    return Conflict();
-                case HttpStatusCode.OK:
-                    return Ok();
+            switch(response.Success)
+            {
+                case true:
+                    return Ok(response.Message);
+                case false:
+                    return BadRequest(response.Message);
                 default:
-                    return BadRequest();
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Error inesperado.");
             }
 
         }

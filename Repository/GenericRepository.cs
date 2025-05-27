@@ -35,15 +35,12 @@ namespace MassageApi_V1.Repository
             return result;
         }
 
-        public async Task<T?> GetbyId(int id)
+        public async Task<T?> GetById(int id)
         {
-            var result = await Entities.FindAsync(id);
-            if (result != null)
-                return result;
-            return null;
+            return await Entities.FindAsync(id);
         }
 
-        public async Task<T> Post(T value)
+        public async Task<T> Add(T value)
         {
             EntityEntry<T> result = await Entities.AddAsync(value);
             await _context.SaveChangesAsync();
@@ -52,15 +49,16 @@ namespace MassageApi_V1.Repository
 
         public async Task<T?> Update(T value)
         {
-            EntityEntry<T> result = _context.Entry(value);
-            if (result != null)
+            try
             {
-                _context.Update(value);
+                Entities.Update(value);
                 await _context.SaveChangesAsync();
-                return result.Entity;
+                return value;
             }
-
-            return null;
+            catch
+            {
+                return null;
+            }
         }
     }
 }

@@ -20,9 +20,15 @@ namespace MassageApi_V1.Controllers
         public async Task<ActionResult> Login(UserNewDTO user)
         {
             var response = await _userService.Login(user);
-            if (response.ToString() == System.Net.HttpStatusCode.BadRequest.ToString())
-                return BadRequest("Usuario y / o contraseña incorrectos");
-            return Ok(response);
+            switch (response.Success)
+            {
+                case true:
+                    return Ok(response.Message);
+                case false:
+                    return BadRequest(response.Message);
+                default:
+                    return StatusCode((int)System.Net.HttpStatusCode.InternalServerError, "Error inesperado.");
+            }
         }
     }
 }
